@@ -28,6 +28,15 @@ with open("output.txt", "w") as o:
 pause = False
 fig = plt.figure(figsize=(20, 6))
 
+ax1 = fig.add_subplot(2,1,1)
+ax2 = fig.add_subplot(2,1,2)
+ax1.set_xlim(0,128)
+ax1.set_ylim(-600,600)
+ax2.set_xlim(0,128)
+ax2.set_ylim(-600,600)
+#ax1 = plt.axes(xlim=(0, 128), ylim=(-600, 600))
+#ax2 = plt.axes(xlim=(0, 128), ylim=(-600, 600))
+
 def onclick(event):
     global pause
     pause = not pause
@@ -56,7 +65,7 @@ def update(frameNum, a0, a1):
         if(len(data) == FFT_SIZE):
             print time.time()
             a0.set_data(range(FFT_SIZE),data)
-            #a1.set_data(range(FFT_SIZE),data)
+            a1.set_data(range(FFT_SIZE),data)
         else:
             #raise Exception("Something went wrong")
             print "Something went wrong, continuing"
@@ -69,9 +78,8 @@ print ser.readline()
         
 print "Plotting data"
 # set up animation
-ax = plt.axes(xlim=(0, 128), ylim=(-600, 600))
-a0, = ax.plot([], [], linestyle='--', marker='o')
-a1, = ax.plot([], [])
+a0, = ax1.plot([], [], linestyle='--', marker='o')
+a1, = ax2.plot([], [], linestyle='--', marker='o')
 anim = animation.FuncAnimation(fig, update, 
 							 fargs=(a0, a1), 
 							 interval=1000)
