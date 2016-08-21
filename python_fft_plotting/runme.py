@@ -33,7 +33,7 @@ ax2 = fig.add_subplot(2,1,2)
 ax1.set_xlim(0,128)
 ax1.set_ylim(-600,600)
 ax2.set_xlim(0,128)
-ax2.set_ylim(-600,600)
+ax2.set_ylim(0,35000)
 #ax1 = plt.axes(xlim=(0, 128), ylim=(-600, 600))
 #ax2 = plt.axes(xlim=(0, 128), ylim=(-600, 600))
 
@@ -56,16 +56,26 @@ def update(frameNum, a0, a1):
                 break
             line += numToAdd
             line += " "
-        # print data
         data = [float(val) for val in line.split()]
-        #with open("output.txt", "a") as o:
-        #    for val in data:
-        #        o.write("%f\n" % val)
-        #    o.write("\n\n")
         if(len(data) == FFT_SIZE):
             print time.time()
             a0.set_data(range(FFT_SIZE),data)
+        ser.write("M;")
+        line = ""
+        for i in range(0,FFT_SIZE):
+            numToAdd = (ser.readline()).strip()
+            if len(numToAdd) == 0:
+                break
+            line += numToAdd
+            line += " "
+        data = [float(val) for val in line.split()]
+        if(len(data) == FFT_SIZE):
+            print time.time()
             a1.set_data(range(FFT_SIZE),data)
+            with open("output.txt", "a") as o:
+                for num in data:
+                    o.write("%f\n" % num)
+                o.write("\n\n\n")
         else:
             #raise Exception("Something went wrong")
             print "Something went wrong, continuing"
